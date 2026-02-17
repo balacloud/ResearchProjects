@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Underwriting Workbench - Phase 1 FRD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .tab-active { border-bottom: 2px solid #0f766e; color: #0f766e; font-weight: 600; }
+        .tab-inactive { color: #64748b; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .traffic-light { width: 40px; height: 40px; border-radius: 50%; opacity: 0.3; transition: opacity 0.3s, box-shadow 0.3s; margin: 0 auto; }
+        .light-active { opacity: 1; box-shadow: 0 0 15px currentColor; }
+        .step-connector { height: 2px; background: #e2e8f0; flex-grow: 1; margin: 0 10px; }
+    </style>
+    <!-- Chosen Palette: Slate & Teal. Background: #f8fafc (Slate-50). Primary: #0f172a (Slate-900). Accent: #0f766e (Teal-700). -->
+    <!-- Application Structure Plan: The app is structured as a vertical narrative. 1. Dashboard Header: Context. 2. Vision Cards: The 3 'Bake-Ins' (Why we are building this). 3. Competitive Radar: Visual proof of superiority vs Legacy. 4. Triage Sim: Interactive logic flow to demonstrate 'Intelligent Triage'. 5. LOB Details: Tabbed deep-dive into specific features. 6. MoSCoW: Searchable requirements list for project scope. This structure moves from high-level strategy to specific execution logic. -->
+    <!-- Visualization & Content Choices: 
+         1. Radar Chart: Goal -> Compare. Viz -> Chart.js Radar. Justification -> Perfect for comparing multi-variate performance (Legacy vs New) on the same axes.
+         2. Triage Logic: Goal -> Change/Process. Viz -> CSS Grid + JS State. Justification -> Users need to 'feel' the automation rules (Red/Green light) to understand the requirements.
+         3. Tabs: Goal -> Organize. Viz -> HTML/JS. Justification -> Cleanly separates dense LOB text without overwhelming the user.
+         4. Bar Chart: Goal -> Inform. Viz -> Chart.js Bar. Justification -> Shows the Dealer Performance Dashboard concept.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Navigation / Header -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Project: 2026 Workbench</h1>
+                <p class="text-xs text-slate-400">Phase 1 Functional Requirements Document (FRD)</p>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm">
+                <a href="#vision" class="hover:text-teal-400 transition">Strategic Vision</a>
+                <a href="#benchmark" class="hover:text-teal-400 transition">Competitive Edge</a>
+                <a href="#triage" class="hover:text-teal-400 transition">Intelligent Triage</a>
+                <a href="#lob" class="hover:text-teal-400 transition">LOB Specs</a>
+                <a href="#moscow" class="hover:text-teal-400 transition">Priorities</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Intro Section -->
+        <section class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Redefining the Underwriter's Workflow</h2>
+            <p class="text-slate-600 leading-relaxed">
+                This interactive FRD outlines the requirements for an in-house Underwriting Workbench designed to surpass market leaders (Insurity, Guidewire) by 2026. 
+                Our focus shifts from simple data entry to <span class="font-semibold text-teal-700">Intelligent Orchestration</span>, utilizing Data Fabrics and AI-driven triage.
+            </p>
+        </section>
+
+        <!-- 1. The 3 Pillars (Vision) -->
+        <section id="vision">
+            <div class="mb-6 border-l-4 border-teal-600 pl-4">
+                <h3 class="text-xl font-bold text-slate-900">Strategic "Bake-Ins"</h3>
+                <p class="text-sm text-slate-500">The three non-negotiable architectural requirements that define our edge.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card A -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover border-t-4 border-blue-500 transition duration-300">
+                    <div class="text-blue-500 text-2xl mb-3">&#128451;</div> <!-- Unicode Database Icon -->
+                    <h4 class="font-bold text-lg mb-2">The Data Fabric</h4>
+                    <p class="text-slate-600 text-sm mb-4">Moving beyond "Data Silos." Requirements mandate a fabric that pre-fills 70% of submission data via API before human review.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs border border-slate-100">
+                        <span class="font-semibold text-slate-700">Req ID: DF-01</span><br>
+                        Auto-populate VIN/Address &lt; 2s.
+                    </div>
+                </div>
+                
+                <!-- Card B -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover border-t-4 border-amber-500 transition duration-300">
+                    <div class="text-amber-500 text-2xl mb-3">&#128736;</div> <!-- Unicode Traffic Light/Signal -->
+                    <h4 class="font-bold text-lg mb-2">Human-in-the-Loop Triage</h4>
+                    <p class="text-slate-600 text-sm mb-4">Traffic-lighting logic. The system must filter noise, auto-declining bad risks and fast-tracking clean ones.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs border border-slate-100">
+                        <span class="font-semibold text-slate-700">Req ID: TL-05</span><br>
+                        Auto-decline "Red" risks (e.g., Wildfire).
+                    </div>
+                </div>
+
+                <!-- Card C -->
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover border-t-4 border-teal-500 transition duration-300">
+                    <div class="text-teal-500 text-2xl mb-3">&#128200;</div> <!-- Unicode Chart Rising -->
+                    <h4 class="font-bold text-lg mb-2">Algorithmic Underwriting</h4>
+                    <p class="text-slate-600 text-sm mb-4">Dynamic pricing models based on dealer performance. Real-time feedback loops for F&I products.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs border border-slate-100">
+                        <span class="font-semibold text-slate-700">Req ID: AU-09</span><br>
+                        Dealer "Hit Ratio" adjusts pricing.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Competitive Benchmark (Chart) -->
+        <section id="benchmark" class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/3">
+                    <div class="mb-4 border-l-4 border-indigo-600 pl-4">
+                        <h3 class="text-xl font-bold text-slate-900">Comparison Scorecard</h3>
+                        <p class="text-sm text-slate-500">Visualizing the gap between current Legacy capabilities and the 2026 Target Build.</p>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-6">
+                        We are not just upgrading software; we are changing the operating model. The chart demonstrates the massive shift required in <strong>Data Entry</strong> (from manual to IDP) and <strong>Agility</strong> (Rules Engine).
+                    </p>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h5 class="font-bold text-sm text-slate-800 mb-2">Key Differentiator:</h5>
+                        <p class="text-xs text-slate-600">
+                            <strong>Target Build:</strong> Integrated "Single Pane of Glass" utilizing internal audit trails and automated risk tagging.
+                        </p>
+                        <p class="text-xs text-slate-600 mt-2">
+                            <strong>Legacy:</strong> Disconnected tabs, email-based collaboration, and manual re-keying.
+                        </p>
+                    </div>
+                </div>
+                <div class="md:w-2/3 flex justify-center items-center">
+                    <div class="chart-container">
+                        <canvas id="benchmarkChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Intelligent Triage Logic Simulator -->
+        <section id="triage" class="bg-slate-900 text-white p-8 rounded-xl shadow-2xl relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="mb-8 text-center">
+                    <h3 class="text-2xl font-bold mb-2">Requirement: Intelligent Triage Logic</h3>
+                    <p class="text-slate-400 text-sm max-w-2xl mx-auto">
+                        The workbench must act as a gatekeeper. Select a submission scenario below to see how the system is required to process it without human intervention (Straight-Through Processing).
+                    </p>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="flex justify-center gap-4 mb-10">
+                    <button onclick="runTriage('clean')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 rounded-lg text-sm font-medium transition">Scenario: Clean Risk (Auto-Quote)</button>
+                    <button onclick="runTriage('complex')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg text-sm font-medium transition">Scenario: Partial Data (Manual)</button>
+                    <button onclick="runTriage('highrisk')" class="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-medium transition">Scenario: Wildfire Zone (Decline)</button>
+                </div>
+
+                <!-- Visual Flow -->
+                <div class="flex flex-col md:flex-row items-center justify-between text-center gap-4">
+                    
+                    <!-- Step 1 -->
+                    <div class="bg-slate-800 p-4 rounded-lg w-full md:w-1/4 border border-slate-700">
+                        <div class="text-2xl mb-2">&#128196;</div>
+                        <div class="font-bold text-sm">Ingestion (IDP)</div>
+                        <div id="step1-text" class="text-xs text-slate-400 mt-2">Waiting...</div>
+                    </div>
+
+                    <div class="hidden md:block text-slate-600 text-2xl">&#8594;</div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-slate-800 p-4 rounded-lg w-full md:w-1/4 border border-slate-700">
+                        <div class="text-2xl mb-2">&#129302;</div>
+                        <div class="font-bold text-sm">Rules Engine</div>
+                        <div id="step2-text" class="text-xs text-slate-400 mt-2">Checking Appetite...</div>
+                    </div>
+
+                    <div class="hidden md:block text-slate-600 text-2xl">&#8594;</div>
+
+                    <!-- Step 3 (Traffic Light) -->
+                    <div class="bg-black p-4 rounded-lg w-full md:w-1/4 border-4 border-slate-700 flex justify-around items-center">
+                        <div id="light-red" class="traffic-light bg-red-500"></div>
+                        <div id="light-yellow" class="traffic-light bg-yellow-500"></div>
+                        <div id="light-green" class="traffic-light bg-green-500"></div>
+                    </div>
+
+                    <div class="hidden md:block text-slate-600 text-2xl">&#8594;</div>
+
+                    <!-- Step 4 (Result) -->
+                    <div id="result-box" class="bg-slate-800 p-4 rounded-lg w-full md:w-1/4 border border-slate-700 transition-colors duration-500">
+                        <div class="text-2xl mb-2" id="result-icon">&#10067;</div>
+                        <div class="font-bold text-sm" id="result-title">Outcome</div>
+                        <div id="step3-text" class="text-xs text-slate-400 mt-2">System Ready</div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LOB Requirements (Interactive Tabs) -->
+        <section id="lob">
+            <div class="mb-6 border-l-4 border-teal-600 pl-4">
+                <h3 class="text-xl font-bold text-slate-900">Line of Business Requirements</h3>
+                <p class="text-sm text-slate-500">Click tabs to view specific functional needs and data sources for each LOB.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Tabs Header -->
+                <div class="flex border-b border-slate-200">
+                    <button onclick="switchTab('auto')" id="tab-auto" class="flex-1 py-4 text-center text-sm font-medium hover:bg-slate-50 transition tab-active">
+                        Auto Finance
+                    </button>
+                    <button onclick="switchTab('pnc')" id="tab-pnc" class="flex-1 py-4 text-center text-sm font-medium hover:bg-slate-50 transition tab-inactive">
+                        P&C (Property)
+                    </button>
+                    <button onclick="switchTab('fni')" id="tab-fni" class="flex-1 py-4 text-center text-sm font-medium hover:bg-slate-50 transition tab-inactive">
+                        F&I (GAP/Warranty)
+                    </button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="p-8 min-h-[400px]">
+                    
+                    <!-- Auto Finance Content -->
+                    <div id="content-auto" class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4">Real-Time Credit Integration</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Bureau Integration:</strong> Direct API hooks to Equifax/Experian/TransUnion for sub-second retrieval.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Auto-Calc:</strong> Automated verification of Loan-to-Value (LTV) and Payment-to-Income (PTI) ratios against internal guidelines.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Dealer Webhooks:</strong> RESTful API endpoints to receive deal structures directly from Dealer Management Systems (DMS).</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 p-4 bg-slate-50 rounded border border-slate-200">
+                                <h5 class="font-bold text-xs text-slate-500 uppercase mb-2">Primary Persona</h5>
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Junior Underwriter</div>
+                                    <span class="text-xs text-slate-500 ml-2">Needs speed & auto-calc validation.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-sm text-slate-800 mb-4">Required Data Mapping</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                                        <span>Applicant Credit Score</span>
+                                        <span>Source: External API</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                        <div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                                        <span>Vehicle Value (Black Book)</span>
+                                        <span>Source: External API</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                        <div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                                        <span>Stips (Paystubs)</span>
+                                        <span>Source: IDP Extraction</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                        <div class="bg-teal-500 h-1.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- P&C Content -->
+                    <div id="content-pnc" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4">Geospatial & Loss Analysis</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Hazard Maps:</strong> Embedded MapBox/Google Maps layers visualizing flood zones, wildfire perimeter, and distance-to-coast.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Third-Party Fabric:</strong> Pre-fill property specs (Year Built, Roof Age, Sq Ft) using address lookup integration.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>GenAI Summarization:</strong> LLM integration to ingest 5-year Loss Runs (PDFs) and output a 5-bullet summary of claim frequency/severity.</span>
+                                </li>
+                            </ul>
+                             <div class="mt-6 p-4 bg-slate-50 rounded border border-slate-200">
+                                <h5 class="font-bold text-xs text-slate-500 uppercase mb-2">Primary Persona</h5>
+                                <div class="flex items-center">
+                                    <div class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Senior Reviewer</div>
+                                    <span class="text-xs text-slate-500 ml-2">Needs context & risk visualization.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                             <h4 class="font-bold text-sm text-slate-800 mb-4">Data Visualization Req: Hazard Density</h4>
+                             <div class="chart-container" style="height: 200px;">
+                                <canvas id="pncRiskChart"></canvas>
+                             </div>
+                             <p class="text-xs text-slate-500 mt-2 text-center">Simulated Risk Concentration Data</p>
+                        </div>
+                    </div>
+
+                    <!-- F&I Content -->
+                    <div id="content-fni" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4">Zero-Touch & Dealer Pricing</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>STP (Straight-Through Processing):</strong> Rules engine must auto-approve GAP/Warranty if mileage < 50k and LTV < 120%.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>Dynamic Pricing:</strong> Adjust premium based on specific Dealer "Hit Ratio" (Quote-to-Bind).</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-teal-600 mr-2 font-bold">&bull;</span>
+                                    <span class="text-sm text-slate-600"><strong>VIN Decoding:</strong> Instant trim/option validation to prevent "Power Booking" fraud.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 flex flex-col justify-center">
+                            <h4 class="font-bold text-sm text-slate-800 mb-4 text-center">Req: Dealer Performance Dashboard</h4>
+                             <div class="chart-container" style="height: 220px;">
+                                <canvas id="dealerChart"></canvas>
+                             </div>
+                             <p class="text-xs text-slate-500 mt-2 text-center">Logic: If Bind Ratio > 30%, discount premium by 5%.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. MoSCoW Prioritization -->
+        <section id="moscow">
+            <div class="mb-6 border-l-4 border-slate-600 pl-4 flex justify-between items-end">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">MoSCoW Prioritization Table</h3>
+                    <p class="text-sm text-slate-500">Interactive scope definition for Phase 1 delivery.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="filterTable('all')" class="text-xs px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded">All</button>
+                    <button onclick="filterTable('Must')" class="text-xs px-3 py-1 bg-green-100 text-green-800 hover:bg-green-200 rounded">Must</button>
+                    <button onclick="filterTable('Should')" class="text-xs px-3 py-1 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded">Should</button>
+                    <button onclick="filterTable('Could')" class="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 rounded">Could</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto bg-white rounded-lg shadow border border-slate-200">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Requirement</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Module</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Priority</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200" id="moscow-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-xs py-10">
+            <p>&copy; 2026 Insurance Systems Architecture Team. Phase 1 FRD Draft.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Data & State ---
+        
+        // MoSCoW Data
+        const requirements = [
+            { req: "Unified Dashboard", module: "UI/UX", priority: "Must", desc: "Single Pane of Glass eliminating swivel-chair activity." },
+            { req: "Bureau API Integration", module: "Auto Finance", priority: "Must", desc: "Real-time credit pulls (Equifax/TransUnion)." },
+            { req: "Hazard Maps", module: "P&C", priority: "Must", desc: "Geospatial visualization of wildfire/flood risks." },
+            { req: "IDP Extraction", module: "Core", priority: "Must", desc: "Automated ingestion of PDFs with 95% accuracy." },
+            { req: "Traffic Light Triage", module: "Core", priority: "Must", desc: "Auto-decline Red risks, Auto-quote Green." },
+            { req: "GenAI Summarization", module: "AI Layer", priority: "Should", desc: "Summarize 50-page loss runs into 5 bullets." },
+            { req: "Dealer Performance Dash", module: "F&I", priority: "Should", desc: "Visualize hit ratios to adjust pricing." },
+            { req: "Internal Chat", module: "Collaboration", priority: "Should", desc: "Tagged messaging on specific risk files." },
+            { req: "Voice Dictation", module: "UI/UX", priority: "Could", desc: "Voice-to-text for underwriter notes." },
+            { req: "Mobile App Approval", module: "Core", priority: "Could", desc: "Manager override via mobile device." },
+            { req: "Crypto Payments", module: "Billing", priority: "Won't", desc: "Not in Phase 1 scope." }
+        ];
+
+        // --- Chart Initialization ---
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Radar Chart (Competitive Benchmark)
+            const ctxRadar = document.getElementById('benchmarkChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['Data Entry (IDP)', 'Risk Visibility', 'Collaboration', 'Audit Trail', 'Rule Agility'],
+                    datasets: [{
+                        label: 'Legacy Systems',
+                        data: [20, 30, 25, 40, 15],
+                        fill: true,
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                        borderColor: 'rgb(148, 163, 184)',
+                        pointBackgroundColor: 'rgb(148, 163, 184)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(148, 163, 184)'
+                    }, {
+                        label: 'Target Build (2026)',
+                        data: [90, 95, 85, 90, 85],
+                        fill: true,
+                        backgroundColor: 'rgba(15, 118, 110, 0.2)',
+                        borderColor: 'rgb(15, 118, 110)',
+                        pointBackgroundColor: 'rgb(15, 118, 110)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(15, 118, 110)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: { line: { borderWidth: 3 } },
+                    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } }
+                }
+            });
+
+            // 2. Dealer Performance Chart (Bar)
+            const ctxDealer = document.getElementById('dealerChart').getContext('2d');
+            new Chart(ctxDealer, {
+                type: 'bar',
+                data: {
+                    labels: ['Dealer A', 'Dealer B', 'Dealer C', 'Dealer D'],
+                    datasets: [{
+                        label: 'Quote-to-Bind Ratio (%)',
+                        data: [45, 12, 32, 5],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.7)', // Green (High Perf)
+                            'rgba(239, 68, 68, 0.7)',  // Red (Low Perf)
+                            'rgba(16, 185, 129, 0.7)', // Green
+                            'rgba(239, 68, 68, 0.7)'   // Red
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+             // 3. P&C Risk Chart (Doughnut)
+             const ctxRisk = document.getElementById('pncRiskChart').getContext('2d');
+             new Chart(ctxRisk, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High Fire Risk', 'Flood Zone A', 'Clean Risk'],
+                    datasets: [{
+                        data: [15, 25, 60],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } }
+                }
+            });
+
+            // Populate Table
+            renderTable(requirements);
+        });
+
+        // --- Interaction Logic ---
+
+        // 1. Triage Logic Simulator
+        function runTriage(scenario) {
+            // Reset Lights
+            document.querySelectorAll('.traffic-light').forEach(el => el.classList.remove('light-active'));
+            document.getElementById('result-box').className = "bg-slate-800 p-4 rounded-lg w-full md:w-1/4 border border-slate-700 transition-colors duration-500";
+            
+            // Step 1: Ingestion
+            document.getElementById('step1-text').innerText = "Extracting Data...";
+            document.getElementById('step1-text').className = "text-xs text-teal-400 mt-2 font-bold animate-pulse";
+            
+            setTimeout(() => {
+                document.getElementById('step1-text').innerText = "Data Fabric Pre-filled.";
+                document.getElementById('step1-text').className = "text-xs text-slate-400 mt-2";
+                
+                // Step 2: Rules
+                document.getElementById('step2-text').innerText = "Analyzing Risk...";
+                document.getElementById('step2-text').className = "text-xs text-teal-400 mt-2 font-bold animate-pulse";
+
+                setTimeout(() => {
+                    document.getElementById('step2-text').innerText = "Analysis Complete.";
+                    document.getElementById('step2-text').className = "text-xs text-slate-400 mt-2";
+
+                    // Step 3: Traffic Light & Result
+                    if (scenario === 'clean') {
+                        document.getElementById('light-green').classList.add('light-active');
+                        setResult("Auto-Quote Generated", "&#9989;", "bg-green-900 border-green-600");
+                    } else if (scenario === 'highrisk') {
+                        document.getElementById('light-red').classList.add('light-active');
+                        setResult("Auto-Decline Triggered", "&#9940;", "bg-red-900 border-red-600");
+                    } else {
+                        document.getElementById('light-yellow').classList.add('light-active');
+                        setResult("Manual Review Needed", "&#9888;", "bg-amber-900 border-amber-600");
+                    }
+                }, 1000);
+            }, 1000);
+        }
+
+        function setResult(text, icon, classes) {
+            const box = document.getElementById('result-box');
+            box.className = `p-4 rounded-lg w-full md:w-1/4 border transition-colors duration-500 ${classes}`;
+            document.getElementById('result-title').innerText = text;
+            document.getElementById('result-icon').innerHTML = icon;
+            document.getElementById('step3-text').innerText = "Workflow Complete";
+        }
+
+        // 2. Tab Switching
+        function switchTab(tabId) {
+            // Hide all content
+            ['auto', 'pnc', 'fni'].forEach(id => {
+                document.getElementById(`content-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).classList.remove('tab-active');
+                document.getElementById(`tab-${id}`).classList.add('tab-inactive');
+            });
+
+            // Show selected
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('tab-active');
+            document.getElementById(`tab-${tabId}`).classList.remove('tab-inactive');
+        }
+
+        // 3. Table Filtering & Rendering
+        function renderTable(data) {
+            const tbody = document.getElementById('moscow-body');
+            tbody.innerHTML = '';
+            
+            data.forEach(item => {
+                let badgeColor = '';
+                switch(item.priority) {
+                    case 'Must': badgeColor = 'bg-green-100 text-green-800'; break;
+                    case 'Should': badgeColor = 'bg-blue-100 text-blue-800'; break;
+                    case 'Could': badgeColor = 'bg-yellow-100 text-yellow-800'; break;
+                    case 'Won\'t': badgeColor = 'bg-gray-100 text-gray-800'; break;
+                }
+
+                const row = `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">${item.req}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">${item.module}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${badgeColor}">
+                                ${item.priority}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-500">${item.desc}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function filterTable(priority) {
+            if (priority === 'all') {
+                renderTable(requirements);
+            } else {
+                const filtered = requirements.filter(r => r.priority === priority);
+                renderTable(filtered);
+            }
+        }
+    </script>
+</body>
+</html>
