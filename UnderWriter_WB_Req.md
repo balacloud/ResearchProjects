@@ -1,32 +1,50 @@
-# UnderWriter WB Requirements
+# UnderWriter Workbook Requirements
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Functional Requirements](#functional-requirements)
-   1. [User Stories](#user-stories)
-   2. [Features](#features)
-3. [Non-Functional Requirements](#non-functional-requirements)
-4. [Assumptions](#assumptions)
-5. [Glossary](#glossary)
+2. [Auto Finance](#auto-finance)
+3. [Property & Casualty (P&C)](#property--casualty-pc)
+4. [Finance & Insurance (F&I)](#finance--insurance-fi)
+5. [Citations](#citations)
 
 ## Introduction
-This document outlines the requirements for the UnderWriter Workbench. 
+This document outlines the underwriting requirements for various product lines. The objective is to provide a clear set of guidelines to improve underwriting accuracy and efficiency. 
 
-## Functional Requirements
-### User Stories
-- **As a user**, I want to be able to submit underwriting requests through an intuitive interface.
-- **As an analyst**, I need access to historical data for informed decision-making.
+## Auto Finance
+### General Requirements
+- Requirement 1: Description...
+- Requirement 2: Description...
 
-### Features
-- **User Account Management**: Users can create, read, update, and delete their accounts.
-- **Policy Underwriting Tool**: Users can submit policy applications for underwriting.
+### Detailed Requirements
+- Auto Finance Requirement 1: Description...
+- Auto Finance Requirement 2: Description...
 
-## Non-Functional Requirements
-- **Performance**: The application should handle up to 1000 concurrent users without degradation in performance.
-- **Security**: User data must be encrypted during transmission and at rest.
+### Citations
+1. Citation 1 Reference
+2. Citation 2 Reference
 
-## Assumptions
-- Users are familiar with basic computer operations.
+## Property & Casualty (P&C)
+### General Requirements
+- Requirement 1: Description...
+- Requirement 2: Description...
 
-## Glossary
-- **Underwriting**: The process of evaluating risk in insurance underwriting.
+### Detailed Requirements
+- P&C Requirement 1: Description...
+- P&C Requirement 2: Description...
+
+### Citations
+1. Citation 1 Reference
+2. Citation 2 Reference
+
+## Finance & Insurance (F&I)
+### General Requirements
+- Requirement 1: Description...
+- Requirement 2: Description...
+
+### Detailed Requirements
+- F&I Requirement 1: Description...
+- F&I Requirement 2: Description...
+
+### Citations
+1. Citation 1 Reference
+2. Citation 2 Reference
